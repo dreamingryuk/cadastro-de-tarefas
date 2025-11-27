@@ -1,0 +1,165 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    padding: 20px;
+}
+
+#lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #0002;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    background: #fafafa;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #0007;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    width: 400px;
+    max-height: 70vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #0004;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.box {
+    background: white;
+    width: 400px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px #0003;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+h1 {
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus {
+    border-color: #666;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #0077ff;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #005fd1;
+    transform: scale(1.02);
+}
+
+#recursosAdicionados {
+    background: #fafafa;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    min-height: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#recursosAdicionados div {
+    background: #e7e7e7;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+a {
+    margin-top: 10px;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    color: #0077ff;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+a:hover {
+    color: #005fd1;
+}
+
+/* Estilização da etiqueta de urgência */
+.urgencia {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 8px;
+    border: 2px solid; /* obrigatória para aparecer as cores */
+}
+
+/* Cores conforme urgência */
+.urgencia-baixa {
+    border-color: green;
+    color: green;
+}
+
+.urgencia-normal {
+    border-color: goldenrod;
+    color: goldenrod;
+}
+
+.urgencia-urgente {
+    border-color: red;
+    color: red;
+}
