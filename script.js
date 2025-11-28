@@ -55,6 +55,9 @@ async function enviar() {
         body: JSON.stringify(dados)
     })
 
+    abrirPopupSucesso();
+    limparFormulario();
+
     const resultado = await response.json()
     console.log(resultado)
 }
@@ -203,3 +206,22 @@ document.getElementById("fechar").onclick = () => {
 };
 
 carregarTarefas();
+
+function abrirPopupSucesso() {
+    document.getElementById("popupSucesso").style.display = "flex";
+}
+
+function fecharPopup() {
+    document.getElementById("popupSucesso").style.display = "none";
+}
+
+function limparFormulario() {
+    document.getElementById("urgencia").value = "";
+    document.getElementById("conteudo").value = "";
+    document.getElementById("local").value = "";
+    document.getElementById("data").value = "";
+    document.getElementById("matricula").value = "";
+
+    recursosLista = [];
+    atualizarListaRecursos();
+}
