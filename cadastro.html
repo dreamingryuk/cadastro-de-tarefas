@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Tarefas</title>
-    <script src="./script.js"></script>
+    <script defer src="./script.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,7 +32,7 @@
             <div id="recursosAdicionados"></div>
 
             <label for="data">Data Limite</label>
-            <input type="date" id="data">
+            <input type="datetime-local" id="data">
 
             <label for="matricula">Matrícula</label>
             <input type="number" id="matricula">
@@ -46,7 +46,7 @@
     <div id="popupSucesso" class="popup">
         <div class="popup-content">
             <h2>Tarefa enviada!</h2>
-            <button onclick="fecharPopup()">OK</button>
+            <button onclick="fecharPopup()" id="fechar">OK</button>
         </div>
     </div>
 </body>

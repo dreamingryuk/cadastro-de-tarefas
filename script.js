@@ -1,5 +1,6 @@
 const urlBase = "http://159.65.228.63"
 let recursosLista = [];
+let minhaMatricula = null
 
 function adicionarRecurso() {
     const recursoInput = document.getElementById("recursos");
@@ -32,18 +33,28 @@ async function enviar() {
     const local = document.getElementById("local").value
     const data = document.getElementById("data").value
     const matricula = document.getElementById("matricula").value
+    minhaMatricula = document.getElementById("matricula").value
+    localStorage.setItem("minhaMatricula", minhaMatricula);
 
     if (prioridade === "" || conteudo === "" || local === "" || data === "" || matricula === "") {
         alert("Voce deixou algo em branco.");
         return;
     }
 
+    const dataObj = new Date(data);
+        const ano = dataObj.getFullYear();
+        const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+        const dia = String(dataObj.getDate()).padStart(2, '0');
+        const horas = String(dataObj.getHours()).padStart(2, '0');
+        const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+        const dataFormatada = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+
     const dados = {
         prioridade: prioridade,
         conteudo: conteudo,
         local: local,
-        recursos: recursosLista.map(r => ({ nome: r })),
-        data: data,
+        recursos: recursosLista,
+        data: dataFormatada,
         matricula: matricula
     }
 
@@ -59,7 +70,7 @@ async function enviar() {
     limparFormulario();
 
     const resultado = await response.json()
-    console.log(resultado)
+    console.log(resultado);
 }
 
 function normalizarTexto(texto) {
@@ -73,6 +84,8 @@ function normalizarTexto(texto) {
 async function carregarTarefas() {
     const response = await fetch(urlBase + "/tarefas");
     todasTarefas = await response.json();
+    minhaMatricula = localStorage.getItem("minhaMatricula");
+
 
     const lista = document.getElementById("lista");
     lista.innerHTML = "";
@@ -80,8 +93,20 @@ async function carregarTarefas() {
     todasTarefas.forEach((tarefa, index) => {
 
         const urgencia = detectarUrgencia(tarefa);
-        const data = tarefa.data || tarefa.data_limite || "—";
+        const dataBruta = tarefa.data || tarefa.data_limite || null;
         const matricula = tarefa.matricula || "—";
+
+        let dataFormatada = "—";
+        if (dataBruta) {
+            const dataObj = new Date(dataBruta);
+            const ano = dataObj.getFullYear();
+            const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+            const dia = String(dataObj.getDate()).padStart(2, '0');
+            const horas = String(dataObj.getHours()).padStart(2, '0');
+            const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+            dataFormatada = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+        }
+
 
         const card = document.createElement("div");
         card.className = "card";
@@ -100,7 +125,7 @@ async function carregarTarefas() {
 
         card.innerHTML = `
             <p class="urgencia ${classeUrgencia}">${urgencia}</p>
-            <strong>Data limite:</strong> ${data}<br>
+            <strong>Data limite:</strong> ${dataFormatada}<br>
             <strong>Matrícula:</strong> ${matricula}
         `;
 
@@ -197,12 +222,27 @@ function abrirPopup(index) {
         linha.innerHTML = `<strong>${chave}:</strong> ${valor}`;
         info.appendChild(linha);
     });
+    //const minhasTarefas = todasTarefas.filter(t => t.matricula === matricula);
+
+    const matriculaTarefa = Number(String(tarefa.matricula).trim());
+    const matriculaUsuario = Number(String(minhaMatricula).trim());
+
+    if (matriculaTarefa === matriculaUsuario) {
+        const btnEditar = document.createElement("button");
+        btnEditar.textContent = "Editar";
+        btnEditar.onclick = () => {
+            console.log("Editar tarefa:", tarefa);
+            // usar metodo PUT (/tarefas/idTarefa)
+            // fazer outro GET (/tarefas/idTarefa) que retorna os dados apenas daquela tarefa
+        };
+        info.appendChild(btnEditar);
+    }
 
     popup.style.display = "flex";
 }
 
 document.getElementById("fechar").onclick = () => {
-    document.getElementById("popup").style.display = "none";
+    document.getElementById("popupSucesso").style.display = "none";
 };
 
 carregarTarefas();
