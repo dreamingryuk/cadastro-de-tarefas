@@ -1,6 +1,17 @@
 const urlBase = "http://159.65.228.63"
 let recursosLista = [];
 let minhaMatricula = null
+let idEdicao = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    console.log("ID recebido por GET:", params.get("id"));
+
+    if (params.has("id")) {
+        idEdicao = params.get("id");
+        carregarTarefaParaEdicao(idEdicao);
+    }
+});
 
 function adicionarRecurso() {
     const recursoInput = document.getElementById("recursos");
@@ -227,11 +238,12 @@ function abrirPopup(index) {
     const matriculaTarefa = Number(String(tarefa.matricula).trim());
     const matriculaUsuario = Number(String(minhaMatricula).trim());
 
+
     if (matriculaTarefa === matriculaUsuario) {
         const btnEditar = document.createElement("button");
         btnEditar.textContent = "Editar";
         btnEditar.onclick = () => {
-            console.log("Editar tarefa:", tarefa);
+            window.location.href = `editar.html?id=${tarefa.id}`;
             // usar metodo PUT (/tarefas/idTarefa)
             // fazer outro GET (/tarefas/idTarefa) que retorna os dados apenas daquela tarefa
         };
@@ -241,8 +253,8 @@ function abrirPopup(index) {
     popup.style.display = "flex";
 }
 
-document.getElementById("fechar").onclick = () => {
-    document.getElementById("popupSucesso").style.display = "none";
+document.getElementById("fecharTarefa").onclick = () => {
+    document.getElementById("popup").style.display = "none";
 };
 
 carregarTarefas();
@@ -264,4 +276,95 @@ function limparFormulario() {
 
     recursosLista = [];
     atualizarListaRecursos();
+}
+
+async function carregarTarefaParaEdicao(id) {
+    const response = await fetch(`${urlBase}/tarefas/${id}`);
+    const tarefa = await response.json();
+
+    console.log("DEBUG — Tarefa recebida:", tarefa);
+
+    document.getElementById("urgencia").value = tarefa.prioridade || "";
+    document.getElementById("conteudo").value = tarefa.conteudo || "";
+    document.getElementById("local").value = tarefa.local || "";
+    document.getElementById("data").value = tarefa.dataISO || "";
+    document.getElementById("matricula").value = tarefa.matricula || "";
+
+    if (tarefa.data) {
+
+    // formato 25/02/2025 13:00
+    if (tarefa.data.includes("/")) {
+        const [dia, mes, resto] = tarefa.data.split("/");
+        const [ano, horaMin] = resto.split(" ");
+        const dataISO = `${ano}-${mes}-${dia}T${horaMin}`;
+        document.getElementById("data").value = dataISO;
+    }
+
+    // formato 2025-02-25T13:00
+    else if (tarefa.data.includes("T")) {
+        document.getElementById("data").value = tarefa.data;
+    }
+}
+
+    if (Array.isArray(tarefa.recursos)) {
+        recursosLista = tarefa.recursos;
+    } else if (typeof tarefa.recursos === "string") {
+        recursosLista = tarefa.recursos.split(",").map(r => r.trim());
+    } else {
+        recursosLista = [];
+    }
+    atualizarListaRecursos();
+}
+
+async function salvarEdicao() {
+    if (!idEdicao) {
+        alert("Erro: nenhuma tarefa carregada para a edição.")
+        return
+    }
+
+    const prioridade = document.getElementById("urgencia").value;
+    const conteudo = document.getElementById("conteudo").value;
+    const local = document.getElementById("local").value;
+    const data = document.getElementById("data").value;
+    const matricula = document.getElementById("matricula").value;
+
+    if (!prioridade || !conteudo || !local || !data || !matricula) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    const dataObj = new Date(data);
+    const ano = dataObj.getFullYear();
+    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataObj.getDate()).padStart(2, '0');
+    const horas = String(dataObj.getHours()).padStart(2, '0');
+    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+    const dataFormatada = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+
+    const dadosAtualizados = {
+        id: idEdicao,
+        prioridade: prioridade,
+        conteudo: conteudo,
+        local: local,
+        recursos: recursosLista,
+        data: dataFormatada,
+        matricula: matricula
+    };
+
+    const response = await fetch(`${urlBase}/tarefas/${idEdicao}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosAtualizados)
+    });
+
+    if (!response.ok) {
+        alert("Erro ao atualizar a tarefa.");
+        return
+    }
+
+    abrirPopupSucesso();
+
+    console.log(await response.json());
 }
