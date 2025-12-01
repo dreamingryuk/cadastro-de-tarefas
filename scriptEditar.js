@@ -2,6 +2,10 @@ const urlBase = "http://159.65.228.63";
 let recursosLista = [];
 let idEdicao = null;
 
+window.onload = () => {
+    fecharPopup();
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("id")) {
@@ -22,6 +26,9 @@ async function carregarTarefaParaEdicao(id) {
     document.getElementById("local").value = tarefa.local || "";
     document.getElementById("data").value = tarefa.dataISO || "";
     document.getElementById("matricula").value = tarefa.matricula || "";
+
+    recursosLista = Array.isArray(tarefa.recursos) ? tarefa.recursos : [];
+    atualizarListaRecursos();
 
     if (tarefa.data) {
         // formato 25/02/2025 13:00
@@ -115,4 +122,8 @@ async function salvarEdicao() {
     abrirPopupSucesso();
 
     console.log(await response.json());
+}
+
+function fecharPopup() {
+    document.getElementById("popupSucesso").style.display = "none";
 }

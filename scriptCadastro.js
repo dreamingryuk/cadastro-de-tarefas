@@ -1,6 +1,10 @@
 const urlBase = "http://159.65.228.63";
 let recursosLista = [];
 
+window.onload = () => {
+    fecharPopup();
+};
+
 function adicionarRecurso() {
     const recursoInput = document.getElementById("recursos");
     const recurso = recursoInput.value.trim();

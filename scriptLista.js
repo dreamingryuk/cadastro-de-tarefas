@@ -40,13 +40,25 @@ async function carregarTarefas() {
 
         let dataFormatada = "—";
         if (dataBruta) {
+
+            const soData = /^\d{4}-\d{2}-\d{2}$/.test(dataBruta);
+
             const dataObj = new Date(dataBruta);
-            const ano = dataObj.getFullYear();
-            const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-            const dia = String(dataObj.getDate()).padStart(2, '0');
-            const horas = String(dataObj.getHours()).padStart(2, '0');
-            const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-            dataFormatada = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+            if (!isNaN(dataObj)) {
+                const ano = dataObj.getFullYear();
+                const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+                const dia = String(dataObj.getDate()).padStart(2, '0');
+
+                if (soData) {
+                    // formato 2025-02-25T13:00
+                    dataFormatada = `${dia}/${mes}/${ano}`;
+                } else {
+                    // formato 25/02/2025 13:00
+                    const horas = String(dataObj.getHours()).padStart(2, '0');
+                    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+                    dataFormatada = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+                }
+            }
         }
 
 
