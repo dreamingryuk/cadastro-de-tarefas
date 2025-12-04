@@ -60,12 +60,39 @@ function adicionarRecurso() {
     recursoInput.value = "";
 }
 
+function removerRecurso() {
+    const recursoInput = document.getElementById("recursos");
+    const recurso = recursoInput.value.trim();
+    recursosLista.pop(recurso);
+    atualizarListaRecursos();
+}
+
 function atualizarListaRecursos() {
     const div = document.getElementById("recursosAdicionados");
     div.innerHTML = "";
 
     recursosLista.forEach((r, index) => {
         const item = document.createElement("p");
+        const removedorRecurso = document.createElement("button");
+        removedorRecurso.innerText = "Remover";
+        removedorRecurso.onclick = () => {
+            recursosLista.splice(index, 1);
+            atualizarListaRecursos();
+            
+            removedorRecurso.id = "removeRecurso";
+            
+            removedorRecurso.textContent = "Remover recurso";
+            
+            removedorRecurso.classList.add("meu-botao");
+            
+            removedorRecurso.addEventListener("click", () => {
+                console.log("Recurso removido!");
+            });
+            
+            document.body.appendChild(removedorRecurso);
+        };
+
+
         item.innerText = `${index + 1}. ${r}`;
         div.appendChild(item);
     });
