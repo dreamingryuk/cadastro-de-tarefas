@@ -73,6 +73,7 @@ function atualizarListaRecursos() {
 
     recursosLista.forEach((r, index) => {
         const item = document.createElement("p");
+        item.classList.add("borda-recurso")
         const removedorRecurso = document.createElement("button");
         removedorRecurso.innerText = "Remover";
         removedorRecurso.onclick = () => {
@@ -80,11 +81,8 @@ function atualizarListaRecursos() {
             atualizarListaRecursos();
             
             removedorRecurso.id = "removeRecurso";
-            
             removedorRecurso.textContent = "Remover recurso";
-            
             removedorRecurso.classList.add("meu-botao");
-            
             removedorRecurso.addEventListener("click", () => {
                 console.log("Recurso removido!");
             });

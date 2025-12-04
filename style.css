@@ -19,8 +19,15 @@ body {
     transition: 0.2s;
 }
 
-#removeRecurso {
-    margin-left: 70px;
+.borda-recurso {
+    border: 5px solid #3a71fc;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+#recursosAdicionados button{
+    background-color: #d30000;
+    margin-left: 68%;
 }
 
 .seuCard {
