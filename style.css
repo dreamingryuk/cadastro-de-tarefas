@@ -19,6 +19,10 @@ body {
     transition: 0.2s;
 }
 
+#removeRecurso {
+    margin-left: 70px;
+}
+
 .seuCard {
     border: #005fd1 7px solid;
 }

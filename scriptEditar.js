@@ -63,7 +63,7 @@ function adicionarRecurso() {
 function removerRecurso() {
     const recursoInput = document.getElementById("recursos");
     const recurso = recursoInput.value.trim();
-    recursosLista.pop(recurso);
+    recursosLista.remove(recurso);
     atualizarListaRecursos();
 }
 
@@ -89,14 +89,16 @@ function atualizarListaRecursos() {
                 console.log("Recurso removido!");
             });
             
-            document.body.appendChild(removedorRecurso);
+
+            item.appendChild(removedorRecurso);
         };
 
-
         item.innerText = `${index + 1}. ${r}`;
+        item.appendChild(removedorRecurso);
         div.appendChild(item);
     });
 }
+
 
 function abrirPopupSucesso() {
     document.getElementById("popupSucesso").style.display = "flex";
