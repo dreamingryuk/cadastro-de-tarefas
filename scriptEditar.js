@@ -98,6 +98,10 @@ function atualizarListaRecursos() {
     });
 }
 
+function abrirPopupSucesso() {
+    document.getElementById("popupSucesso").style.display = "flex";
+}
+
 async function salvarEdicao() {
     if (!idEdicao) {
         alert("Erro: nenhuma tarefa carregada para a edição.")

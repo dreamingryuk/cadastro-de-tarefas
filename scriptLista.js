@@ -67,7 +67,6 @@ async function carregarTarefas() {
 
     minhaMatricula = localStorage.getItem("minhaMatricula");
 
-
     const lista = document.getElementById("lista");
     lista.innerHTML = "";
 
@@ -99,6 +98,13 @@ async function carregarTarefas() {
             <strong>Data limite:</strong> ${dataFormatada}<br>
             <strong>Matrícula:</strong> ${matricula}
         `;
+
+        const matriculaTarefa = Number(String(tarefa.matricula).trim());
+        const matriculaUsuario = Number(String(minhaMatricula).trim());
+
+        if (matriculaTarefa === matriculaUsuario) {
+            card.classList.add("seuCard");
+        }
 
         lista.appendChild(card);
     });
@@ -203,8 +209,6 @@ function abrirPopup(index) {
         btnEditar.textContent = "Editar";
         btnEditar.onclick = () => {
             window.location.href = `editar.html?id=${tarefa.id}`;
-            // usar metodo PUT (/tarefas/idTarefa)
-            // fazer outro GET (/tarefas/idTarefa) que retorna os dados apenas daquela tarefa
         };
         info.appendChild(btnEditar);
     }
