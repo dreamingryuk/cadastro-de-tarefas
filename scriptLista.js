@@ -4,7 +4,7 @@ let minhaMatricula = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
-    console.log("ID recebido por GET:", params.get("id"));
+    console.log("ID recebido pelo GET:", params.get("id"));
     carregarTarefas();
 
     if (params.has("id")) {
@@ -21,10 +21,49 @@ function normalizarTexto(texto) {
         .trim();
 }
 
+function formatarData(dataBruta) {
+    if (!dataBruta) return "Data não encontrada";
+
+    let dataObj = null;
+
+    if (/^\d{2}\/\d{2}\/\d{4}/.test(dataBruta)) {
+        const [parteData, parteHora] = dataBruta.split(" ");
+        const [dia, mes, ano] = parteData.split("/");
+        if (parteHora) {
+            dataObj = new Date(`${ano}-${mes}-${dia}T${parteHora}`);
+        } else {
+            dataObj = new Date(`${ano}-${mes}-${dia}`);
+        }
+    }
+    else if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(dataBruta)) {
+        dataObj = new Date(dataBruta.replace(" ", "T"));
+    }
+    else {
+        dataObj = new Date(dataBruta);
+    }
+
+    if (isNaN(dataObj)) return "Data não encontrada";
+
+    const ano = dataObj.getFullYear();
+    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+    const dia = String(dataObj.getDate()).padStart(2, '0');
+    const horas = String(dataObj.getHours()).padStart(2, '0');
+    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+    const segundos = String(dataObj.getSeconds()).padStart(2, '0');
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dataBruta) || /^\d{2}\/\d{2}\/\d{4}$/.test(dataBruta)) {
+        return `${dia}/${mes}/${ano}`;
+    } else if (/:\d{2}:\d{2}$/.test(dataBruta)) {
+        return `${dia}/${mes}/${ano} ${horas}:${minutos}:${segundos}`;
+    } else {
+        return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
+    }
+}
+
 async function carregarTarefas() {
     const response = await fetch(urlBase + "/tarefas");
     todasTarefas = await response.json();
-    todasTarefas.reverse(); // inverti a ordem pra q apareaça a mais recente primeiro
+    todasTarefas.reverse();
 
     minhaMatricula = localStorage.getItem("minhaMatricula");
 
@@ -38,29 +77,7 @@ async function carregarTarefas() {
         const dataBruta = tarefa.data || tarefa.data_limite || null;
         const matricula = tarefa.matricula || "—";
 
-        let dataFormatada = "—";
-        if (dataBruta) {
-
-            const soData = /^\d{4}-\d{2}-\d{2}$/.test(dataBruta);
-
-            const dataObj = new Date(dataBruta);
-            if (!isNaN(dataObj)) {
-                const ano = dataObj.getFullYear();
-                const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-                const dia = String(dataObj.getDate()).padStart(2, '0');
-
-                if (soData) {
-                    // formato 2025-02-25T13:00
-                    dataFormatada = `${dia}/${mes}/${ano}`;
-                } else {
-                    // formato 25/02/2025 13:00
-                    const horas = String(dataObj.getHours()).padStart(2, '0');
-                    const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-                    dataFormatada = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
-                }
-            }
-        }
-
+        let dataFormatada = formatarData(dataBruta);
 
         const card = document.createElement("div");
         card.className = "card";

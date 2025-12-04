@@ -19,7 +19,7 @@ async function carregarTarefaParaEdicao(id) {
     const response = await fetch(`${urlBase}/tarefas/${id}`);
     const tarefa = await response.json();
 
-    console.log("DEBUG — Tarefa recebida:", tarefa);
+    console.log("DEBUG - Tarefa recebida:", tarefa);
 
     document.getElementById("urgencia").value = tarefa.prioridade || "";
     document.getElementById("conteudo").value = tarefa.conteudo || "";
